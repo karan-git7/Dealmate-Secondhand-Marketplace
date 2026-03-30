@@ -31,11 +31,14 @@ const DashboardHome = ({ onNavigate }) => {
   });
   const [salesData, setSalesData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const COLORS = ['#6366f1', '#ec4899', '#f59e0b', '#10b981', '#ef4444'];
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
+      setError(null);
       try {
         const [statsRes, salesRes] = await Promise.all([
           api.get('/admin/stats'),
@@ -43,8 +46,9 @@ const DashboardHome = ({ onNavigate }) => {
         ]);
         setStats(statsRes.data);
         setSalesData(salesRes.data || []);
-      } catch (error) {
-        console.error("Error fetching dashboard data:", error);
+      } catch (err) {
+        console.error("Error fetching dashboard data:", err);
+        setError(err.response?.data?.message || "Failed to connect to the Admin API. Please check your backend logs.");
       } finally {
         setLoading(false);
       }
@@ -52,9 +56,19 @@ const DashboardHome = ({ onNavigate }) => {
     fetchData();
   }, []);
 
-  if (loading) return (
-    <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
-      <div className="loader">Loading Dashboard...</div>
+  if (error) return (
+    <div style={{ padding: '40px', textAlign: 'center' }}>
+      <div style={{ color: '#ef4444', marginBottom: '16px' }}>
+        <AlertCircle size={48} style={{ margin: '0 auto 12px' }} />
+        <h3 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Connection Error</h3>
+        <p style={{ color: '#6b7280' }}>{error}</p>
+      </div>
+      <button 
+        className="btn btn-primary" 
+        onClick={() => window.location.reload()}
+      >
+        Retry Connection
+      </button>
     </div>
   );
 

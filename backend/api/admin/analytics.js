@@ -126,7 +126,11 @@ export const getAdminStats = async (req, res) => {
         });
     } catch (err) {
         console.error("Stats Error:", err);
-        res.status(500).json({ message: "Failed to load analytics" });
+        res.status(500).json({ 
+            message: "Failed to load analytics", 
+            error: err.message,
+            stack: process.env.NODE_ENV === 'development' ? err.stack : undefined 
+        });
     }
 };
 
