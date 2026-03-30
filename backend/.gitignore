@@ -1,0 +1,11 @@
+# Backend-specific ignores (root .gitignore covers most things)
+
+# User-uploaded files — use Cloudinary in production
+uploads/*
+!uploads/.gitkeep
+
+# Duplicate empty folder
+backend/
+
+# Test / debug scripts output
+*.log

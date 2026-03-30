@@ -1,0 +1,67 @@
+# ─── Node ────────────────────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp
+.pnp.js
+
+# ─── Environment / Secrets ───────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ─── Frontend build ──────────────────────────────────────────────────────────
+frontend/build/
+frontend/coverage/
+
+# ─── Backend uploads (user files — served via Cloudinary in production) ──────
+backend/uploads/*
+!backend/uploads/.gitkeep
+backend/data/
+backend/backend/
+
+# ─── AI Service ──────────────────────────────────────────────────────────────
+# Training dataset (688 MB — never commit this)
+ai_service/data/
+# Large spaCy model directory
+ai_service/models/spacy_model/
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+*.pkl.bak
+
+# ─── OS junk ─────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── IDE / Editor ────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+.qodo/
+
+# ─── Logs & temp ─────────────────────────────────────────────────────────────
+*.log
+logs/
+tmp/
+*.tmp
+output.txt
+
+# ─── Misc ────────────────────────────────────────────────────────────────────
+.npm
+.eslintcache
