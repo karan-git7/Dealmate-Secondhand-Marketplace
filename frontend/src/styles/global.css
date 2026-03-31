@@ -78,12 +78,13 @@
   height: 100%;
   border-radius: 50%;
   border: 1.5px solid rgba(16, 185, 129, 0.1);
+  animation: dmOrbitTrack 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 .dm-loader-circuit::after {
   content: '';
   position: absolute;
-  top: -1.5px;
+  top: -3px;
   left: 50%;
   width: 6px;
   height: 6px;
@@ -91,29 +92,19 @@
   border-radius: 50%;
   box-shadow: 0 0 10px #10b981;
   transform: translateX(-50%);
-  animation: dmOrbitTrack 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 .dm-loader.compact .dm-loader-circuit::after {
   width: 4px;
   height: 4px;
-  top: -1px;
+  top: -2px;
 }
 
 @keyframes dmOrbitTrack {
-  0%   { transform: translateX(-50%) rotate(0deg) translateY(-40px); }
-  100% { transform: translateX(-50%) rotate(360deg) translateY(-40px); }
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-/* Specific track for compact mode */
-.dm-loader.compact .dm-loader-circuit::after {
-  animation: dmOrbitTrackCompact 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-@keyframes dmOrbitTrackCompact {
-  0%   { transform: translateX(-50%) rotate(0deg) translateY(-24px); }
-  100% { transform: translateX(-50%) rotate(360deg) translateY(-24px); }
-}
 
 /* ── Text ────────────────────────────────────────────────── */
 .dm-loader-text {
