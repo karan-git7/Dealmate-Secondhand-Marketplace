@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api, { getPublicImageUrl } from "../../utils/api";
 import { CheckCircle, XCircle, Eye, X } from "lucide-react";
+import Loader from "../common/Loader";
 
 export default function SellerApproval() {
   const [sellers, setSellers] = useState([]);
@@ -65,7 +66,7 @@ export default function SellerApproval() {
       </div>
 
       {loading ? (
-        <p>Loading...</p>
+        <Loader text="Fetching verification requests..." />
       ) : sellers.length === 0 ? (
         <p className="text-muted">No verification requests found.</p>
       ) : (

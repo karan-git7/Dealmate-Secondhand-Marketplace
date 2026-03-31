@@ -8,7 +8,7 @@ export default function SiteAnalytics() {
     api.get("/admin/stats").then(res => setStats(res.data));
   }, []);
 
-  if (!stats) return <p className="text-muted">Loading analytics...</p>;
+  if (!stats) return <Loader text="Loading analytics..." compact />;
 
   return (
     <div>

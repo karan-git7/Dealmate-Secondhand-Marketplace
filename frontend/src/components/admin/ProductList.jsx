@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Plus, Pencil, Eye, Trash2, Search, ArrowUpDown, ArrowUp, ArrowDown, Clock } from 'lucide-react';
 import api, { getPublicImageUrl } from '../../utils/api';
 import ListYourProduct from '../vendor/ListYourProduct';
+import Loader from '../common/Loader';
 
 const ProductList = () => {
   const navigate = useNavigate();
@@ -154,7 +155,7 @@ const ProductList = () => {
   };
 
   if (loading) {
-    return <div className="p-4">Loading products...</div>;
+    return <Loader text="Fetching platform inventory..." />;
   }
 
   if (editingProduct) {

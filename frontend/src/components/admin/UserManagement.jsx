@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from "react";
 import api from "../../utils/api";
+import Loader from "../common/Loader";
 
 export default function UserManagement() {
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const fetchUsers = async () => {
     try {
+        setLoading(true);
         const res = await api.get("/admin/users");
         setUsers(res.data);
     } catch (e) {
         console.error("Failed to fetch users", e);
-        // Ensure users is empty array on error, not mock data
         setUsers([]);
+    } finally {
+        setLoading(false);
     }
   };
 
@@ -28,6 +32,8 @@ export default function UserManagement() {
   useEffect(() => {
     fetchUsers();
   }, []);
+
+  if (loading) return <Loader text="Fetching user accounts..." />;
 
   return (
     <div>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api, { getPublicImageUrl } from "../../utils/api";
 import { Pencil, Trash2 } from "lucide-react";
+import Loader from "../common/Loader";
 
 export default function CategoryList({ onAdd = () => {} }) {
   const [categories, setCategories] = useState([]);
@@ -182,7 +183,9 @@ export default function CategoryList({ onAdd = () => {} }) {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan="3" className="text-center p-4">Loading...</td>
+                  <td colSpan="3" className="text-center p-4">
+                    <Loader text="Loading categories..." compact />
+                  </td>
                 </tr>
               ) : visible.length === 0 ? (
                 <tr>

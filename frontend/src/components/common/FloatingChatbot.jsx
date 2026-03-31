@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { MessageCircle, Send, X } from "lucide-react";
 import api from "../../utils/api";
 import "../../styles/components.css";
+import Loader from "./Loader";
 
 const FAQ_ITEMS = [
   { key: "post_product", label: "How to post a product" },
@@ -239,7 +240,7 @@ export default function FloatingChatbot() {
             ))}
             {loading && (
               <div className="chatbot-loading">
-                Thinking...
+                <Loader text="Thinking..." compact />
               </div>
             )}
           </div>

@@ -5,6 +5,7 @@ import KhaltiCheckout from "khalti-checkout-web";
 import api from "../../utils/api";
 import { X, CreditCard, Wallet } from "lucide-react";
 import { PAYMENT_KEYS } from "../../config/paymentKeys";
+import Loader from "../common/Loader";
 
 // Initialize Stripe outside component
 const stripePromise = loadStripe(PAYMENT_KEYS.STRIPE_PUBLIC_KEY);
@@ -77,9 +78,9 @@ const StripeForm = ({ fee, onSuccess, onError }) => {
         type="submit"
         disabled={!stripe || !clientSecret || loading}
         className="btn-primary"
-        style={{ width: '100%', padding: '12px' }}
+        style={{ width: '100%', padding: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >
-        {loading ? "Processing..." : `Pay ${fee} (Stripe)`}
+        {loading ? <Loader text="Processing..." compact /> : `Pay ${fee} (Stripe)`}
       </button>
     </form>
   );
@@ -139,7 +140,7 @@ const StripeSection = ({ productPrice, fee, onSuccess, onError }) => {
     }
   };
 
-  if (!clientSecret) return <div>Loading Stripe...</div>;
+  if (!clientSecret) return <Loader text="Loading payment gateway..." compact />;
 
   return (
     <form onSubmit={handleSubmit} style={{ marginTop: '20px' }}>
@@ -165,7 +166,7 @@ const StripeSection = ({ productPrice, fee, onSuccess, onError }) => {
         className="btn-primary"
         style={{ width: '100%', padding: '12px' }}
       >
-        {loading ? "Processing..." : `Pay Rs. ${fee}`}
+        {loading ? <Loader text="Processing..." compact /> : `Pay Rs. ${fee}`}
       </button>
     </form>
   );

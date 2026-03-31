@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import api from "../../utils/api";
 import { Star, User } from "lucide-react";
+import Loader from "../common/Loader";
 
 export default function ProductReviews({ productId }) {
   const [reviews, setReviews] = useState([]);
@@ -100,7 +101,7 @@ export default function ProductReviews({ productId }) {
               required
             />
             <button className="btn btn-primary" type="submit" disabled={submitting}>
-              {submitting ? "Submitting..." : "Submit Review"}
+              {submitting ? <Loader text="Submitting..." compact /> : "Submit Review"}
             </button>
           </form>
         </div>
@@ -113,7 +114,9 @@ export default function ProductReviews({ productId }) {
       )}
 
       <div className="reviews-list">
-        {reviews.length === 0 ? (
+        {loading ? (
+          <Loader text="Fetching reviews..." compact />
+        ) : reviews.length === 0 ? (
           <div className="no-reviews">No reviews yet.</div>
         ) : (
           reviews.map((review) => (

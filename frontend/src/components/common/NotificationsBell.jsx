@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../../utils/api";
 import { useSocket } from "../../context/SocketContext";
 import "../../styles/notifications.css";
+import Loader from "./Loader";
 
 const timeAgo = (date) => {
   if (!date) return "";
@@ -126,7 +127,9 @@ export default function NotificationsBell() {
           </div>
           <div className="notification-list">
             {loading && items.length === 0 ? (
-              <div className="notification-empty">Loading...</div>
+              <div className="notification-empty" style={{ display: 'flex', justifyContent: 'center' }}>
+                <Loader text="Loading..." compact />
+              </div>
             ) : items.length === 0 ? (
               <div className="notification-empty">No notifications</div>
             ) : (

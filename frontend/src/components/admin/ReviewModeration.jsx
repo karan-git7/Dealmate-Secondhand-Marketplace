@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from "react";
 import api from "../../utils/api";
+import Loader from "../common/Loader";
 
 export default function ReviewModeration() {
   const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get("/admin/reviews").then(res => setReviews(res.data));
+    api.get("/admin/reviews")
+      .then(res => setReviews(res.data))
+      .catch(err => console.error("Failed to fetch reviews", err))
+      .finally(() => setLoading(false));
   }, []);
 
   const remove = async (id) => {
     await api.delete(`/admin/reviews/${id}`);
     setReviews(reviews.filter(r => r._id !== id));
   };
+
+  if (loading) return <Loader text="Fetching reviews for moderation..." />;
 
   return (
     <div>

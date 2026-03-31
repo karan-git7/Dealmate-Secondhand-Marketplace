@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api, { API_ORIGIN } from "../../utils/api";
 import { ChevronDown, Pencil, Trash2 } from "lucide-react";
+import Loader from "../common/Loader";
 
 export default function SubCategoryList({ onAdd = () => {} }) {
   const [categories, setCategories] = useState([]);
@@ -9,9 +10,11 @@ export default function SubCategoryList({ onAdd = () => {} }) {
   const [editing, setEditing] = useState(null);
   const [editName, setEditName] = useState("");
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const fetchAll = async () => {
     try {
+      setLoading(true);
       const [catRes, subRes] = await Promise.all([
         api.get("/admin/categories").catch(() => api.get("/categories")),
         api.get("/admin/subcategories").catch(() => api.get("/subcategories"))
@@ -21,6 +24,8 @@ export default function SubCategoryList({ onAdd = () => {} }) {
     } catch {
       setCategories([]);
       setSubs([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -74,6 +79,8 @@ export default function SubCategoryList({ onAdd = () => {} }) {
     }
     await fetchAll();
   };
+
+  if (loading) return <Loader text="Fetching category structure..." />;
 
   return (
     <div className="dashboard-home">

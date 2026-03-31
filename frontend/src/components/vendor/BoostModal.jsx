@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../../utils/api";
 import { X, Clock, Zap, CreditCard } from "lucide-react";
+import Loader from "../common/Loader";
 
 export default function BoostModal({ product, onClose, onBoosted }) {
   const [tiers, setTiers] = useState([]);
@@ -135,9 +136,10 @@ export default function BoostModal({ product, onClose, onBoosted }) {
           </button>
         </div>
 
-        <div style={{ padding: 16 }}>
-          {loading ? (
-            <div>Loading packages...</div>
+        <div style={{ padding: 16, position: 'relative' }}>
+          {loading && <Loader overlay text="Processing..." />}
+          {loading && !tiers.length ? (
+            <Loader text="Fetching packages..." compact />
           ) : tiers.length === 0 ? (
             <div>No boost packages configured. Contact support.</div>
           ) : (

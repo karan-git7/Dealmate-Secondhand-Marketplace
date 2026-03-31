@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import api from '../../utils/api';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../../styles/auth.css';
+import Loader from '../common/Loader';
 
 export default function VerifyOtp() {
   const navigate = useNavigate();
@@ -45,6 +46,7 @@ export default function VerifyOtp() {
 
   return (
     <div className="auth-page">
+      {loading && <Loader overlay text="Verifying code..." />}
       <div className="auth-card">
         <h2>Verify your email</h2>
         <p className="subtitle">Enter the 6-digit code sent to your email</p>
