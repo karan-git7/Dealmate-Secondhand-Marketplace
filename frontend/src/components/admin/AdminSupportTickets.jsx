@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from "../../utils/api";
 import { Mail, MessageSquare, Clock, CheckCircle, Trash2, Eye, X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import Loader from "../common/Loader";
 
 const AdminSupportTickets = () => {
     const [tickets, setTickets] = useState([]);
@@ -66,7 +67,7 @@ const AdminSupportTickets = () => {
         }
     };
 
-    if (loading) return <div className="p-6">Loading tickets...</div>;
+    if (loading) return <Loader text="Fetching support tickets..." />;
 
     return (
         <div className="admin-page">

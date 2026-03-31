@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import api from "../../utils/api";
 import { CheckCircle, X, Plus, Trash2 } from "lucide-react";
 import "../../styles/admin-dashboard.css";
+import Loader from "../common/Loader";
 
 export default function ManageBoosts() {
   const [packages, setPackages] = useState([]);
@@ -59,7 +60,7 @@ export default function ManageBoosts() {
     }
   };
 
-  if (loading) return <div className="loading-overlay"><span>Loading Boost Settings...</span></div>;
+  if (loading) return <Loader text="Loading boost settings..." />;
 
   return (
     <div className="dashboard-home">

@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import api from '../../utils/api';
 import '../../styles/auth.css';
+import Loader from '../common/Loader';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -65,6 +66,7 @@ export default function Login() {
 
   return (
     <div className="auth-page">
+      {loading && <Loader overlay text="Signing you in..." />}
       <div className="auth-card" role="region" aria-label="Login">
         <h2>Login</h2>
 

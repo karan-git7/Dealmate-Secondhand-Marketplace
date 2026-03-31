@@ -13,6 +13,7 @@ import MyReports from "../components/user/MyReports";
 import MySupportTickets from "../components/user/MySupportTickets";
 import { useSearchParams } from "react-router-dom";
 import "../styles/profile.css";
+import Loader from "../components/common/Loader";
 
 const UserProfile = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -72,6 +73,7 @@ const UserProfile = () => {
 
   return (
     <div className="profile-page-container">
+      {loading && <Loader overlay text="Updating your profile..." />}
       <div className="profile-card">
         {/* Header Section */}
         <div className="profile-header">

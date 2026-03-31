@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from "../../utils/api";
 import { ShieldAlert, Check, User, ShoppingBag, Eye, X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import Loader from "../common/Loader";
 
 const ReportManagement = () => {
     const [reports, setReports] = useState([]);
@@ -53,7 +54,7 @@ const ReportManagement = () => {
         }
     };
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <Loader text="Reviewing safety reports..." />;
 
     return (
         <div className="admin-page">

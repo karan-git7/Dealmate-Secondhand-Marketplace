@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import api from "../utils/api";
 import "../styles/support.css";
 import { CheckCircle, AlertCircle } from "lucide-react";
+import Loader from "../components/common/Loader";
 
 const Support = () => {
   const [email, setEmail] = useState("");
@@ -38,6 +39,7 @@ const Support = () => {
         <h2>Contact Support</h2>
         <p>We're here to help! Send us a message and we'll respond as soon as possible.</p>
       </div>
+      {loading && <Loader overlay text="Sending your message..." />}
 
       {success && (
         <div className="alert-success">

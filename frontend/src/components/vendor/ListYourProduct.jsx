@@ -9,6 +9,7 @@ import axios from "axios";
 import api, { API_BASE_URL, getPublicImageUrl } from "../../utils/api";
 import PaymentModal from "./PaymentModal";
 import "./ListYourProduct.css";
+import Loader from "../common/Loader";
 
 const ListYourProduct = ({ initialData, isEmbedded = false }) => {
   const navigate = useNavigate();
@@ -635,7 +636,7 @@ const ListYourProduct = ({ initialData, isEmbedded = false }) => {
             onChange={handleImageUpload}
           />
           {uploading ? (
-            <p>Uploading...</p>
+            <Loader compact text="Uploading images..." />
           ) : (
             <>
               <div style={{ marginBottom: '16px', color: '#64748b' }}>
@@ -1000,6 +1001,7 @@ const ListYourProduct = ({ initialData, isEmbedded = false }) => {
 
   return (
     <div className={containerClass}>
+      {uploading && <Loader overlay text="Creating your listing..." />}
       <div className="wizard-container">
 
         <div className="wizard-header">

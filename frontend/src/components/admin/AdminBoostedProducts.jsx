@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../../utils/api";
 import { Zap, Clock } from "lucide-react";
+import Loader from "../common/Loader";
 
 function timeRemaining(boostedUntil) {
   const diff = new Date(boostedUntil).getTime() - Date.now();
@@ -28,9 +29,7 @@ export default function AdminBoostedProducts() {
     load();
   }, []);
 
-  if (loading) return (
-    <div style={{ padding: 32, textAlign: "center", color: "#6b7280" }}>Loading...</div>
-  );
+  if (loading) return <Loader text="Loading promoted listings..." />;
 
   return (
     <div className="dashboard-home">

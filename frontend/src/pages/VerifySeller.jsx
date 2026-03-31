@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../utils/api";
 import "../styles/seller.css";
+import Loader from "../components/common/Loader";
 
 export default function VerifySeller() {
   const navigate = useNavigate();
@@ -115,11 +116,7 @@ export default function VerifySeller() {
   };
 
   if (loading) {
-    return (
-      <div className="seller-app" style={{ justifyContent: "center", alignItems: "center" }}>
-        <div className="spinner">Checking status...</div>
-      </div>
-    );
+    return <Loader text="Checking verification status..." />;
   }
 
   if (status === "pending") {

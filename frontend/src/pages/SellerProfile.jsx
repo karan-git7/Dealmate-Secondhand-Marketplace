@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import api, { getPublicImageUrl } from "../utils/api";
 import "../styles/sellerProfile.css";
 import { X, Edit2, Trash2, CheckCircle, AlertCircle } from "lucide-react";
+import Loader from "../components/common/Loader";
 
 export default function SellerProfile() {
   const { id } = useParams();
@@ -134,7 +135,7 @@ export default function SellerProfile() {
     }
   };
 
-  if (loading) return <div className="seller-profile"><div className="sp-loading">Loading...</div></div>;
+  if (loading) return <Loader text="Loading seller profile..." />;
   if (!data) return <div className="seller-profile"><div className="sp-loading">Seller not found</div></div>;
 
   const { user, stats, products, reviews } = data;

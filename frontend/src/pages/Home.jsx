@@ -5,6 +5,7 @@ import api, { getPublicImageUrl } from "../utils/api";
 import { getDrivingRoute } from "../utils/routingService";
 import { fetchUserRecommendations, fetchTrendingProducts } from "../utils/recommendations";
 import { Heart, ShieldCheck, CheckCircle, AlertCircle, X, ChevronLeft, ChevronRight, Zap } from "lucide-react";
+import Loader from "../components/common/Loader";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -540,7 +541,7 @@ const Home = () => {
           <h2>{userLocation ? "Nearby Products" : "Latest Products"}</h2>
           <div className="gallery-grid">
             {loading ? (
-              <div style={{ padding: 12 }}>Loading...</div>
+              <Loader text="Finding the best deals for you..." />
             ) : displayProducts.length === 0 ? (
               <div style={{ padding: 12 }}>No products found.</div>
             ) : (

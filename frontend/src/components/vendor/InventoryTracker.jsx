@@ -3,6 +3,7 @@ import api, { getPublicImageUrl } from "../../utils/api";
 import { Search, MoreVertical, Edit, Trash2, RefreshCw, Calendar, Eye, CheckCircle, XCircle, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import BoostedInventory from "./BoostedInventory";
+import Loader from "../common/Loader";
 
 export default function InventoryTracker() {
     const navigate = useNavigate();
@@ -237,7 +238,7 @@ export default function InventoryTracker() {
     const filteredProducts = getFilteredProducts();
     const getCount = (status) => products.filter(p => (p.status || 'active') === status).length;
 
-    if (loading) return <div style={{ padding: 20 }}>Loading inventory...</div>;
+    if (loading) return <Loader text="Syncing your inventory..." />;
 
     return (
         <div className="dashboard">

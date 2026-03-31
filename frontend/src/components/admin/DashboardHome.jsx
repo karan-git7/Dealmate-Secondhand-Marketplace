@@ -8,6 +8,7 @@ import {
   AreaChart, Area, XAxis, Tooltip, ResponsiveContainer,
   BarChart, Bar, YAxis, CartesianGrid, PieChart, Pie, Cell
 } from 'recharts';
+import Loader from "../common/Loader";
 
 const DashboardHome = ({ onNavigate }) => {
   const [stats, setStats] = useState({
@@ -60,6 +61,8 @@ const DashboardHome = ({ onNavigate }) => {
     };
     fetchData();
   }, []);
+
+  if (loading) return <Loader text="Assembling your analytics..." />;
 
   if (error) return (
     <div style={{ padding: '40px', textAlign: 'center' }}>

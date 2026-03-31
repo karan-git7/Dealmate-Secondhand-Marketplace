@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import api from "../../utils/api";
 import "../../styles/seller.css";
+import Loader from "../common/Loader";
 
 export default function SellerDashboardPage() {
   const navigate = useNavigate();
@@ -47,7 +48,7 @@ export default function SellerDashboardPage() {
     fetchData();
   }, []);
 
-  if (loading) return <div style={{ padding: 20 }}>Loading dashboard...</div>;
+  if (loading) return <Loader text="Loading your dashboard stats..." />;
 
   // Calculate metrics
   const totalProducts = products.length;

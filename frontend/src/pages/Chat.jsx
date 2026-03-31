@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import api, { API_ORIGIN } from "../utils/api";
 import { Image as ImgIcon, Mic, Sticker, Smile, ThumbsUp, Send } from "lucide-react";
 import { useSocket } from "../context/SocketContext";
+import Loader from "../components/common/Loader";
 
 export default function Chat() {
   const { id: routeId } = useParams();
@@ -495,7 +496,7 @@ export default function Chat() {
         )}
         <div className="dm-chat-messages">
           {loading ? (
-            <div className="dm-chat-empty">Loading...</div>
+            <Loader text="Loading your messages..." />
           ) : messages.length === 0 ? (
             <div className="dm-chat-empty">No messages</div>
           ) : (

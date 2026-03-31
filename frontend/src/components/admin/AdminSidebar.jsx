@@ -71,7 +71,7 @@ const AdminSidebar = ({ activePage, setActivePage }) => {
   return (
     <div className="admin-sidebar">
       <div className="sidebar-logo">
-        <div 
+        <div
           style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}
           onClick={() => navigate('/')}
           title="Go to Homepage"

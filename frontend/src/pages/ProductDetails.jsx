@@ -9,6 +9,7 @@ import LocationMap from "../components/common/LocationMap";
 import Breadcrumbs from "../components/common/Breadcrumbs";
 import { getDrivingRoute } from "../utils/routingService";
 import { fetchSimilarProducts } from "../utils/recommendations";
+import Loader from "../components/common/Loader";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -207,7 +208,7 @@ const ProductDetails = () => {
     }
   }, [userLocation, product]);
 
-  if (loading) return <div className="container py-4">Loading...</div>;
+  if (loading) return <Loader text="Loading product details..." />;
 
   if (!product) return <div className="container py-4">Product not found</div>;
 

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../../utils/api';
 import '../../styles/auth.css';
+import Loader from '../common/Loader';
 
 export default function ForgetPassword() {
   const [step, setStep] = useState(1);
@@ -99,6 +100,7 @@ export default function ForgetPassword() {
 
   return (
     <div className="auth-page">
+      {loading && <Loader overlay text="Processing reset request..." />}
       <div className="auth-card">
 
         {step === 1 ? (

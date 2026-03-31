@@ -3,6 +3,7 @@ import api, { API_ORIGIN, getPublicImageUrl } from "../../utils/api";
 import { categoryConfig } from "../../config/categories";
 import { Plus, Trash2, Edit2, Save, X, Upload, CheckCircle, ChevronRight, Layout, Info, AlertCircle } from "lucide-react";
 import "./CategoryManagement.css";
+import Loader from "../common/Loader";
 
 
 export default function CategoryManagement() {
@@ -307,7 +308,7 @@ export default function CategoryManagement() {
 
     const getFullImageUrl = (path) => getPublicImageUrl(path, 'category');
 
-    if (loading) return <div className="loading-overlay"><span>Loading Catalog...</span></div>;
+    if (loading) return <Loader text="Preparing catalog..." />;
 
     return (
         <div className="cat-workspace">

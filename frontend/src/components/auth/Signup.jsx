@@ -4,6 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { registerUser } from '../../utils/auth';
 import '../../styles/auth.css';
+import Loader from '../common/Loader';
 
 function Signup() {
   const [name, setName] = useState('');
@@ -173,6 +174,7 @@ function Signup() {
 
   return (
     <div className="auth-page">
+      {loading && <Loader overlay text="Creating your account..." />}
       <div className="auth-card" aria-labelledby="signup-heading">
         <h2 id="signup-heading">Create an Account</h2>
         <p className="subtitle">Sign up to list and buy great products</p>

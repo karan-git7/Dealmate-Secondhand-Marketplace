@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../../utils/api";
 import { useLogo } from "../../context/LogoContext";
+import Loader from "../common/Loader";
 
 const DEFAULT_LOGO = "/images/logos/logo.svg";
 
@@ -124,6 +125,7 @@ export default function ManageLogo() {
           </div>
         </div>
       </div>
+      {uploading && <Loader overlay text="Saving brand assets..." />}
     </div>
   );
 }

@@ -4,6 +4,7 @@ import api, { getPublicImageUrl } from "../utils/api";
 import "../styles/browse.css";
 import { Heart } from "lucide-react";
 import Breadcrumbs from "../components/common/Breadcrumbs";
+import Loader from "../components/common/Loader";
 
 function LikeButton() {
   const [liked, setLiked] = useState(false);
@@ -653,7 +654,7 @@ export default function Browse() {
           </div>
 
           {loading ? (
-            <div>Loading...</div>
+            <Loader text="Searching for listings..." />
           ) : (
             <div className="browse-grid">
               {paginatedProducts.length === 0 ? (

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api, { getPublicImageUrl } from "../utils/api";
 import "../styles/wishlist.css";
 import { MapPin } from "lucide-react";
+import Loader from "../components/common/Loader";
 
 const Wishlist = () => {
   const navigate = useNavigate();
@@ -25,14 +26,7 @@ const Wishlist = () => {
 
   const imageUrl = (src) => getPublicImageUrl(src, 'product');
 
-  if (loading) return (
-    <div className="wishlist-container">
-      <div className="wishlist-header">
-        <h2>My Wishlist</h2>
-      </div>
-      <div style={{ textAlign: "center", padding: "4rem", color: "#64748b" }}>Loading...</div>
-    </div>
-  );
+  if (loading) return <Loader text="Loading your wishlist..." />;
 
   return (
     <div className="wishlist-container">
