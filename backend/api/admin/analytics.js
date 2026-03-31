@@ -10,126 +10,115 @@ import Payment from "../../models/Payment.js";
  */
 export const getAdminStats = async (req, res) => {
     try {
-        const totalUsers = await User.countDocuments();
-        const admins = await User.countDocuments({ role: "admin" });
-        const sellersCount = await User.countDocuments({ role: "seller" });
-        const productsCount = await Product.countDocuments();
-        const ordersCount = await Order.countDocuments();
+        const stats = {
+            totalUsers: 0,
+            admins: 0,
+            sellersCount: 0,
+            productsCount: 0,
+            ordersCount: 0,
+            totalProductViews: 0,
+            totalInterestedUsers: 0,
+            totalRevenue: 0,
+            listingRevenue: 0,
+            boostRevenue: 0,
+            pendingVerifications: 0,
+            reportedItemsCount: 0,
+            activeSellersCount: 0,
+            totalSalesValue: 0,
+            activeUsers7d: 0,
+            activeUsers30d: 0,
+            newUsersThisWeek: 0,
+            newSellersThisWeek: 0,
+            categoryChartData: []
+        };
 
-        // Sum revenue from successful payments, split by purpose
-        const payments = await Payment.find({ status: "completed" });
-        
-        const listingRevenue = payments
-          .filter(p => {
-              // Priority 1: Explicit purpose
-              if (p.purpose) return p.purpose.includes('listing');
-              // Priority 2: Gateway Metadata (Stripe)
-              if (p.paymentGatewayData?.metadata?.purpose) return p.paymentGatewayData.metadata.purpose.includes('listing');
-              // Priority 3: Order Name (Khalti)
-              if (p.paymentGatewayData?.purchase_order_name) return p.paymentGatewayData.purchase_order_name.toLowerCase().includes('listing');
-              // Fallback: If no purpose and not obviously a boost, it's a listing fee (old data)
-              const isBoost = p.paymentGatewayData?.purchase_order_name?.toLowerCase().includes('boost') || 
-                              p.paymentGatewayData?.metadata?.purpose?.includes('boost');
-              return !isBoost;
-          })
-          .reduce((acc, p) => acc + (p.amount || 0), 0);
+        // 1. Basic Counts
+        try {
+            stats.totalUsers = await User.countDocuments();
+            stats.admins = await User.countDocuments({ role: "admin" });
+            stats.sellersCount = await User.countDocuments({ role: "seller" });
+            stats.productsCount = await Product.countDocuments();
+            stats.ordersCount = await Order.countDocuments();
+        } catch (e) { console.error("Basic counts error:", e); }
 
-        const boostRevenueFromPayments = payments
-          .filter(p => {
-              // Priority 1: Explicit purpose
-              if (p.purpose) return p.purpose.includes('boost');
-              // Priority 2: Gateway Metadata (Stripe)
-              if (p.paymentGatewayData?.metadata?.purpose) return p.paymentGatewayData.metadata.purpose.includes('boost');
-              // Priority 3: Order Name (Khalti)
-              if (p.paymentGatewayData?.purchase_order_name) return p.paymentGatewayData.purchase_order_name.toLowerCase().includes('boost');
-              return false;
-          })
-          .reduce((acc, p) => acc + (p.amount || 0), 0);
+        // 2. Revenue Calculation
+        try {
+            const payments = await Payment.find({ status: "completed" });
+            const listingRevenue = payments
+                .filter(p => {
+                    if (p.purpose === 'listing' || p.purpose?.includes('listing')) return true;
+                    const isBoost = p.paymentGatewayData?.purchase_order_name?.toLowerCase().includes('boost') || 
+                                    p.paymentGatewayData?.metadata?.purpose?.includes('boost') ||
+                                    p.purpose?.includes('boost');
+                    return !isBoost;
+                })
+                .reduce((acc, p) => acc + (p.amount || 0), 0);
 
-        // Fallback/Supplement: Sum boostAmount from Products collection for currently active boosts
-        // that might not have corresponding Payment records in this test environment
-        const productsWithBoost = await Product.find({ boostAmount: { $gt: 0 } });
-        const boostAmountFromProducts = productsWithBoost.reduce((acc, p) => acc + (p.boostAmount || 0), 0);
+            const boostRevenueFromPayments = payments
+                .filter(p => {
+                    if (p.purpose === 'boost' || p.purpose?.includes('boost')) return true;
+                    return p.paymentGatewayData?.purchase_order_name?.toLowerCase().includes('boost') || 
+                           p.paymentGatewayData?.metadata?.purpose?.includes('boost');
+                })
+                .reduce((acc, p) => acc + (p.amount || 0), 0);
 
-        // We use the MAX of both or sum them? To be safe, usually total boost revenue = boostRevenueFromPayments.
-        // But if boostRevenueFromPayments is 0 and we have boostAmount in products, we should show it.
-        const boostRevenue = Math.max(boostRevenueFromPayments, boostAmountFromProducts);
-        const totalRevenue = listingRevenue + boostRevenue;
+            const productsWithBoost = await Product.find({ boostAmount: { $gt: 0 } });
+            const boostAmountFromProducts = productsWithBoost.reduce((acc, p) => acc + (p.boostAmount || 0), 0);
 
+            stats.listingRevenue = listingRevenue;
+            stats.boostRevenue = Math.max(boostRevenueFromPayments, boostAmountFromProducts);
+            stats.totalRevenue = stats.listingRevenue + stats.boostRevenue;
+        } catch (e) { console.error("Revenue calculation error:", e); }
 
-        // Time-based ranges
-        const now = new Date();
-        const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-        const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-        const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
+        // 3. Time-based metrics
+        try {
+            const now = new Date();
+            const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+            const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
 
-        // Active Users
-        const activeUsers7d = await User.countDocuments({ lastActive: { $gte: sevenDaysAgo } });
-        const activeUsers30d = await User.countDocuments({ lastActive: { $gte: thirtyDaysAgo } });
+            stats.activeUsers7d = await User.countDocuments({ lastActive: { $gte: sevenDaysAgo } });
+            stats.activeUsers30d = await User.countDocuments({ lastActive: { $gte: thirtyDaysAgo } });
+            stats.newUsersThisWeek = await User.countDocuments({ createdAt: { $gte: startOfWeek } });
+            stats.newSellersThisWeek = await User.countDocuments({ role: "seller", createdAt: { $gte: startOfWeek } });
+            
+            stats.activeSellersCount = await User.countDocuments({
+                role: "seller",
+                isBlocked: false,
+                lastActive: { $gte: thirtyDaysAgo }
+            });
+        } catch (e) { console.error("Time metrics error:", e); }
 
-        // Growth metrics
-        const newUsersThisWeek = await User.countDocuments({ createdAt: { $gte: startOfWeek } });
-        const newSellersThisWeek = await User.countDocuments({ role: "seller", createdAt: { $gte: startOfWeek } });
+        // 4. Products & Engagement
+        try {
+            const products = await Product.find({}, 'views likes category');
+            stats.totalProductViews = products.reduce((acc, p) => acc + (p.views || 0), 0);
+            stats.totalInterestedUsers = products.reduce((acc, p) => acc + (p.likes?.length || 0), 0);
 
-        // View & Engagement stats
-        const products = await Product.find({}, 'views likes paymentInfo status category');
-        const totalProductViews = products.reduce((acc, p) => acc + (p.views || 0), 0);
+            const categoryCounts = products.reduce((acc, p) => {
+                if (p.category) acc[p.category] = (acc[p.category] || 0) + 1;
+                return acc;
+            }, {});
+            stats.categoryChartData = Object.keys(categoryCounts).map(cat => ({
+                name: cat,
+                value: categoryCounts[cat]
+            })).sort((a, b) => b.value - a.value).slice(0, 5);
+        } catch (e) { console.error("Products aggregation error:", e); }
 
-        const totalInterestedUsers = products.reduce((acc, p) => acc + (p.likes?.length || 0), 0);
+        // 5. Orders & Verification
+        try {
+            const orders = await Order.find({ status: { $ne: 'cancelled' } });
+            stats.totalSalesValue = orders.reduce((acc, order) => acc + (order.totalAmount || 0), 0);
+            stats.pendingVerifications = await SellerVerification.countDocuments({ status: "pending" });
+            stats.reportedItemsCount = await Report.countDocuments({ status: "pending" });
+        } catch (e) { console.error("Orders/Verifications error:", e); }
 
-        // Active Sellers (last active within 30 days)
-        const activeSellersCount = await User.countDocuments({
-            role: "seller",
-            isBlocked: false,
-            lastActive: { $gte: thirtyDaysAgo }
-        });
-
-
-        // Moderation & Alerts
-        const pendingVerifications = await SellerVerification.countDocuments({ status: "pending" });
-        const reportedItemsCount = await Report.countDocuments({ status: "pending" });
-
-        // Category breakdown
-        const categoryCounts = products.reduce((acc, p) => {
-            acc[p.category] = (acc[p.category] || 0) + 1;
-            return acc;
-        }, {});
-        const categoryChartData = Object.keys(categoryCounts).map(cat => ({
-            name: cat,
-            value: categoryCounts[cat]
-        })).sort((a, b) => b.value - a.value).slice(0, 5);
-
-        // Orders Total
-        const orders = await Order.find({ status: { $ne: 'cancelled' } });
-        const totalSalesValue = orders.reduce((acc, order) => acc + (order.totalAmount || 0), 0);
-
-        res.json({
-            totalUsers,
-            admins,
-            sellersCount,
-            productsCount,
-            ordersCount,
-            totalProductViews,
-            totalInterestedUsers,
-            totalRevenue,
-            listingRevenue,
-            boostRevenue,
-            pendingVerifications,
-            reportedItemsCount,
-            activeSellersCount,
-            totalSalesValue,
-            activeUsers7d,
-            activeUsers30d,
-            newUsersThisWeek,
-            newSellersThisWeek,
-            categoryChartData
-        });
+        res.json(stats);
     } catch (err) {
-        console.error("Stats Error:", err);
+        console.error("Stats Fatal Error:", err);
         res.status(500).json({ 
-            message: "Failed to load analytics", 
-            error: err.message,
-            stack: process.env.NODE_ENV === 'development' ? err.stack : undefined 
+            message: "A fatal error occurred while loading analytics.", 
+            error: err.message 
         });
     }
 };

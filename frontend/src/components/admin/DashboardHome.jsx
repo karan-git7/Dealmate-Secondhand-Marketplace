@@ -32,6 +32,7 @@ const DashboardHome = ({ onNavigate }) => {
   const [salesData, setSalesData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [errorDetail, setErrorDetail] = useState("");
 
   const COLORS = ['#6366f1', '#ec4899', '#f59e0b', '#10b981', '#ef4444'];
 
@@ -39,6 +40,7 @@ const DashboardHome = ({ onNavigate }) => {
     const fetchData = async () => {
       setLoading(true);
       setError(null);
+      setErrorDetail("");
       try {
         const [statsRes, salesRes] = await Promise.all([
           api.get('/admin/stats'),
@@ -48,7 +50,10 @@ const DashboardHome = ({ onNavigate }) => {
         setSalesData(salesRes.data || []);
       } catch (err) {
         console.error("Error fetching dashboard data:", err);
-        setError(err.response?.data?.message || "Failed to connect to the Admin API. Please check your backend logs.");
+        const errMsg = err.response?.data?.message || "Failed to connect to the Admin API.";
+        const errDet = err.response?.data?.error || err.message;
+        setError(errMsg);
+        setErrorDetail(errDet);
       } finally {
         setLoading(false);
       }
@@ -60,8 +65,13 @@ const DashboardHome = ({ onNavigate }) => {
     <div style={{ padding: '40px', textAlign: 'center' }}>
       <div style={{ color: '#ef4444', marginBottom: '16px' }}>
         <AlertCircle size={48} style={{ margin: '0 auto 12px' }} />
-        <h3 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Connection Error</h3>
-        <p style={{ color: '#6b7280' }}>{error}</p>
+        <h3 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Dashboard Error</h3>
+        <p style={{ color: '#6b7280', maxWidth: '400px', margin: '0 auto 8px' }}>{error}</p>
+        {errorDetail && (
+          <p style={{ color: '#9ca3af', fontSize: '0.875rem', fontFamily: 'monospace', background: '#f9fafb', padding: '8px', borderRadius: '4px', maxWidth: '500px', margin: '8px auto' }}>
+            Reason: {errorDetail}
+          </p>
+        )}
       </div>
       <button 
         className="btn btn-primary" 
